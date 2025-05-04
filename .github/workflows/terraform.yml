@@ -89,11 +89,10 @@ jobs:
         run: terraform apply -auto-approve -input=false
 
       - name: Save Private Key to Artifact
-        working-directory: infra
         run: |
-          mkdir -p tf-artifacts
-          terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
-          chmod 600 tf-artifacts/ec2_key.pem
+          mkdir -p infra/tf-artifacts
+          terraform -chdir=infra output -raw private_key_pem > infra/tf-artifacts/ec2_key.pem
+          chmod 600 infra/tf-artifacts/ec2_key.pem
 
       - name: Upload SSH Key Artifact
         uses: actions/upload-pages-artifact@v3
