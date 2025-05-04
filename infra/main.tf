@@ -2,21 +2,21 @@ provider "aws" {
   region = var.region
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-24.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical (Ubuntu official)
-}
+#data "aws_ami" "ubuntu" {
+#  most_recent = true
+#
+#  filter {
+#    name   = "name"
+#    values = ["ubuntu/images/hvm-ssd/ubuntu-24.04-amd64-server-*"]
+#  }
+#
+#  filter {
+#    name   = "virtualization-type"
+#    values = ["hvm"]
+#  }
+#
+#  owners = ["099720109477"] # Canonical (Ubuntu official)
+#}
 
 data "aws_vpc" "default" {
   default = true
@@ -93,7 +93,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_instance" "ec2" {
-  ami           = data.aws_ami.ubuntu.id
+  ami           = "ami-084568db4383264d4"
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
