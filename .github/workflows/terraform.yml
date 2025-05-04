@@ -50,6 +50,7 @@ jobs:
               echo "exists=false" >> $GITHUB_ENV
             fi
       - name: Init & Apply Bootstrap
+        if: steps.check_bucket.outputs.exists == 'false'
         working-directory: bootstrap
         run: |
           terraform init
