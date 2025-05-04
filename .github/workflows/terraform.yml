@@ -88,12 +88,16 @@ jobs:
         working-directory: infra
         run: terraform apply -auto-approve -input=false
 
-      - name: Extract and Save SSH Private Key
+      - name: Create A Dir
         working-directory: infra
         run: |
           mkdir -p tf-artifacts
-          terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
-          chmod 600 tf-artifacts/ec2_key.pem
+
+      - name: Extract and Save SSH Private Key
+        working-directory: infra/tf-artifacts
+        run: |
+          terraform output -raw private_key_pem > ec2_key.pem
+          chmod 600 ec2_key.pem
 
       - name: Upload SSH Private Key as Artifact
         uses: actions/upload-pages-artifact@v3
