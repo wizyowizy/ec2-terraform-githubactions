@@ -78,10 +78,11 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init (with backend)
-        working-directory: infra
-        run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}" \
-          -backend-config="key=${{ env.TF_KEY }}" \
-          -backend-config="region=${{ env.AWS_REGION }}"
+        run: |
+          terraform -chdir=infra init \
+            -backend-config="bucket=realcloud-tfstate-bucket-001" \
+            -backend-config="key=ec2-infra/terraform.tfstate" \
+            -backend-config="region=us-east-1"
 
       - name: Terraform Apply
         working-directory: infra
