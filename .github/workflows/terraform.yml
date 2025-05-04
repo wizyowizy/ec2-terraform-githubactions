@@ -95,7 +95,7 @@ jobs:
           chmod 600 tf-artifacts/ec2_key.pem
 
       - name: Upload SSH Key Artifact
-        uses: actions/upload--pages-artifact@v3
+        uses: actions/upload-pages-artifact@v3
         with:
           name: ec2-private-key
           path: infra/tf-artifacts/ec2_key.pem
