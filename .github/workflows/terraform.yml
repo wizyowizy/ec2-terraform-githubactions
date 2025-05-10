@@ -96,7 +96,7 @@ jobs:
         working-directory: infra
         run: |
           mkdir -p tf-artifacts
-          terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem || echo "No key output"
+          terraform output -raw private_key_pem | base64 -d  > tf-artifacts/ec2_key.pem || echo "No key output"
           chmod 600 tf-artifacts/ec2_key.pem || true
 
       - name: Upload SSH Private Key as Artifact
