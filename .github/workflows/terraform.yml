@@ -84,9 +84,9 @@ jobs:
             -backend-config="key=ec2-infra/terraform.tfstate" \
             -backend-config="region=us-east-1"
 
-      - name: Terraform Destroy
-        working-directory: infra
-        run: terraform destroy -auto-approve -input=false || true
+#      - name: Terraform Destroy
+#        working-directory: infra
+#        run: terraform destroy -auto-approve -input=false || true
 
       - name: Terraform Apply
         working-directory: infra
@@ -97,7 +97,7 @@ jobs:
         run: |
           mkdir -p tf-artifacts
           terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem || echo "No key output"
-          chmod 600 tf-artifacts/ec2_key.pem || true
+          chmod 600 tf-artifacts/ec2_key.pem_base64 || true
 
       - name: Upload SSH Private Key as Artifact
         uses: actions/upload-pages-artifact@v3
