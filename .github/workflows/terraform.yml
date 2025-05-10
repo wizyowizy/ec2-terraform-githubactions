@@ -77,16 +77,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Destroy
-        working-directory: infra
-        run: terraform destroy -auto-approve -input=false || true
-
       - name: Terraform Init (with backend)
         run: |
           terraform -chdir=infra init \
             -backend-config="bucket=realcloud-tfstate-bucket-001" \
             -backend-config="key=ec2-infra/terraform.tfstate" \
             -backend-config="region=us-east-1"
+
+      - name: Terraform Destroy
+        working-directory: infra
+        run: terraform destroy -auto-approve -input=false || true
 
       - name: Terraform Apply
         working-directory: infra
