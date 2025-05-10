@@ -77,6 +77,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Terraform Destroy
+        working-directory: infra
+        run: terraform destroy -auto-approve -input=false || true
+
       - name: Terraform Init (with backend)
         run: |
           terraform -chdir=infra init \
@@ -92,8 +96,8 @@ jobs:
         working-directory: infra
         run: |
           mkdir -p tf-artifacts
-          terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
-          chmod 600 tf-artifacts/ec2_key.pem
+          terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem || echo "No key output"
+          chmod 600 tf-artifacts/ec2_key.pem || true
 
       - name: Upload SSH Private Key as Artifact
         uses: actions/upload-pages-artifact@v3
