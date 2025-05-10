@@ -111,6 +111,6 @@ resource "aws_instance" "mysql" {
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
 
   tags = {
-    Name = "MySQL Server"
+    Name = "Database Server"
   }
 }
