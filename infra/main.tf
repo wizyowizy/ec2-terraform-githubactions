@@ -78,6 +78,13 @@ resource "aws_security_group" "ec2_sg" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  ingress {
+    description = "DB Port 9090"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   # Outbound Rules - Allow all
   egress {
@@ -92,13 +99,34 @@ resource "aws_security_group" "ec2_sg" {
   }
 }
 
-resource "aws_instance" "ec2" {
+resource "aws_instance" "nginx" {
   ami           = "ami-084568db4383264d4"
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
 
   tags = {
-    Name = "Terraform EC2 Instance"
+    Name = "Nginx Server"
+  }
+}
+resource "aws_instance" "apache" {
+  ami           = "ami-084568db4383264d4"
+  instance_type = var.instance_type
+  key_name      = aws_key_pair.generated_key.key_name
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+
+  tags = {
+    Name = "Apache Server"
+  }
+}
+
+resource "aws_instance" "mysql" {
+  ami           = "ami-084568db4383264d4"
+  instance_type = var.instance_type
+  key_name      = aws_key_pair.generated_key.key_name
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+
+  tags = {
+    Name = "MySQL Server"
   }
 }
