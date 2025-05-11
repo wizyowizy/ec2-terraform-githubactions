@@ -23,11 +23,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Debug: Show directory structure
-        run: |
-          echo "Working directory: $(pwd)"
-          ls -R
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -39,6 +34,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+
 
       - name: Init & Apply Bootstrap
         working-directory: ./bootstrap
@@ -77,7 +73,8 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./infra
-        run: terraform apply -auto-approve -input=false
+        run: |
+          terraform apply -auto-approve -input=false
 
       - name: Save Private Key to Artifact
         working-directory: ./infra
@@ -91,4 +88,3 @@ jobs:
         with:
           name: ec2-private-key
           path: infra/tf-artifacts/ec2_key.pem
-
