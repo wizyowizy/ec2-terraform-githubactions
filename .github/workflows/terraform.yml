@@ -1,4 +1,4 @@
-name: Terraform: Bootstrap + Provision Infrastructure
+name: "Terraform: Bootstrap + Provision Infrastructure"
 
 on:
   push:
@@ -13,6 +13,7 @@ env:
   AWS_REGION: us-east-1
   BUCKET_NAME: redtech-tfstate-bucket-001
   TF_KEY: ec2-infra/terraform.tfstate
+
 
 jobs:
   bootstrap:
