@@ -14,7 +14,6 @@ env:
   BUCKET_NAME: redtech-tfstate-bucket-001
   TF_KEY: ec2-infra/terraform.tfstate
 
-
 jobs:
   bootstrap:
     name: Create S3 Bucket for Terraform Backend
@@ -23,6 +22,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Debug: Show directory structure
+        run: |
+          echo "Working directory: $(pwd)"
+          ls -R
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -37,7 +41,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Init & Apply Bootstrap
-        working-directory: bootstrap
+        working-directory: ./bootstrap
         run: |
           terraform init
           terraform apply -auto-approve -input=false
@@ -64,17 +68,19 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init (with backend)
-        working-directory: infra
-        run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}" \
-          -backend-config="key=${{ env.TF_KEY }}" \
-          -backend-config="region=${{ env.AWS_REGION }}"
+        working-directory: ./infra
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ env.BUCKET_NAME }}" \
+            -backend-config="key=${{ env.TF_KEY }}" \
+            -backend-config="region=${{ env.AWS_REGION }}"
 
       - name: Terraform Apply
-        working-directory: infra
+        working-directory: ./infra
         run: terraform apply -auto-approve -input=false
 
       - name: Save Private Key to Artifact
-        working-directory: infra
+        working-directory: ./infra
         run: |
           mkdir -p tf-artifacts
           terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
@@ -85,3 +91,4 @@ jobs:
         with:
           name: ec2-private-key
           path: infra/tf-artifacts/ec2_key.pem
+
