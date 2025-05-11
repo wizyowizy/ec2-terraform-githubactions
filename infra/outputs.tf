@@ -3,16 +3,16 @@ output "private_key_pem" {
   sensitive = true
 }
 
-output "instance_public_ip_nginx" {
-  value = aws_instance.nginx.public_ip
+output "instance_public_ip_master" {
+  value = aws_instance.master.public_ip
 }
 
-output "instance_public_ip_apache" {
-  value = aws_instance.apache.public_ip
+output "instance_public_ip_worker-1" {
+  value = aws_instance.worker-node-1.public_ip
 }
 
-output "instance_public_ip_mysql" {
-  value = aws_instance.mysql.public_ip
+output "instance_public_ip_worker-2" {
+  value = aws_instance.worker-node-2.public_ip
 }
 
 

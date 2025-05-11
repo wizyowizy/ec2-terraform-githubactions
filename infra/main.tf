@@ -70,7 +70,52 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Outbound Rules - Allow all
+ ingress {
+    description = "kube apiserver"
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+ }
+  ingress {
+    description = "Kube Etcd"
+    from_port   = 2379
+    to_port     = 2380
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Kubelet "
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "Kube Controller Manager "
+    from_port   = 10257
+    to_port     = 10257
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "Kube Controller Scheduler "
+    from_port   = 10259
+    to_port     = 10259
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    description = "NodePort Services"
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+# Outbound Rules - Allow all
   egress {
     from_port   = 0
     to_port     = 0
@@ -79,38 +124,38 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   tags = {
-    Name = "ec2-allow-web-and-ssh"
+    Name = "kubernetes-workers-nodes"
   }
 }
 
-resource "aws_instance" "nginx" {
+resource "aws_instance" "master" {
   ami           = "ami-084568db4383264d4"
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
 
   tags = {
-    Name = "Nginx Server"
+    Name = "Master-Node"
   }
 }
-resource "aws_instance" "apache" {
+resource "aws_instance" "worker-node-1" {
   ami           = "ami-084568db4383264d4"
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
 
   tags = {
-    Name = "Apache Server"
+    Name = "Worker-Node-1"
   }
 }
 
-resource "aws_instance" "mysql" {
+resource "aws_instance" "worker-node-2" {
   ami           = "ami-084568db4383264d4"
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
 
   tags = {
-    Name = "Database Server"
+    Name = "Worker-Node-2"
   }
 }
