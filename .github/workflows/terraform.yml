@@ -35,9 +35,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-
       - name: Init & Apply Bootstrap
-        working-directory: ./bootstrap
+        working-directory: bootstrap
         run: |
           terraform init
           terraform apply -auto-approve -input=false
@@ -64,20 +63,17 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init (with backend)
-        working-directory: ./infra
-        run: |
-          terraform init \
-            -backend-config="bucket=${{ env.BUCKET_NAME }}" \
-            -backend-config="key=${{ env.TF_KEY }}" \
-            -backend-config="region=${{ env.AWS_REGION }}"
+        working-directory: infra
+        run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}" \
+          -backend-config="key=${{ env.TF_KEY }}" \
+          -backend-config="region=${{ env.AWS_REGION }}"
 
       - name: Terraform Apply
-        working-directory: ./infra
-        run: |
-          terraform apply -auto-approve -input=false
+        working-directory: infra
+        run: terraform apply -auto-approve -input=false
 
       - name: Save Private Key to Artifact
-        working-directory: ./infra
+        working-directory: infra
         run: |
           mkdir -p tf-artifacts
           terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
