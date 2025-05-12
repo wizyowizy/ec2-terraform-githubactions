@@ -14,5 +14,7 @@ output "instance_public_ip_worker-1" {
 output "instance_public_ip_worker-2" {
   value = aws_instance.worker-node-2.public_ip
 }
-
+output "public_key_openssh" {
+  value = tls_private_key.ssh_key.public_key_openssh
+}
 
