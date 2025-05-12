@@ -11,7 +11,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  BUCKET_NAME: "wizyowizy2025"
+  BUCKET_NAME:  "wizyowizy2025-onyinye"
   TF_KEY: ec2-infra/terraform.tfstate
 
 jobs:
