@@ -1,9 +1,9 @@
 variable "region" {
-  description = "AWS region"
   default     = "us-east-1"
+  description = "AWS region to deploy resources"
 }
 
 variable "bucket_name" {
-  description = "Name of the bucket for storing tfstate"
-  type        = string
+  default     = "wizyowizy2025"
+  description = "Globally unique name for the S3 bucket"
 }
