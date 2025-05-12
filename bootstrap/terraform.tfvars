@@ -1,2 +1,2 @@
 
-bucket_name = "realcloud-tfstate-bucket-001"
+bucket_name = "wizyowizy2025"
