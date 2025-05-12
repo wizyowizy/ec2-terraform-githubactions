@@ -88,28 +88,29 @@ jobs:
         working-directory: infra
         run: terraform destroy -auto-approve -input=false || true
 
-      - name: Terraform Apply
-        working-directory: infra
-        run: terraform apply -auto-approve -input=false
-
-      - name: Create A Dir
-        working-directory: infra
-        run: |
-            mkdir -p tf-artifacts
-            terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
-            chmod 600 tf-artifacts/ec2_key.pem
-            terraform output -raw public_key_openssh > tf-artifacts/ec2_key.pub
-            chmod 644 tf-artifacts/ec2_key.pub
-
-      - name: Upload SSH Private Key as Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: ec2-private-key
-          path: infra/tf-artifacts/
-
-      - name: Upload SSH Public Key as Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: ec2-public-key
-          path: infra/tf-artifacts/
+#      - name: Terraform Apply
+#        working-directory: infra
+#        run: terraform apply -auto-approve -input=false
+#
+#      - name: Create A Dir
+#        working-directory: infra
+#        run: |
+#            mkdir -p tf-artifacts
+#            mkdir -p tf-artifacts/public
+#            terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
+#            chmod 600 tf-artifacts/ec2_key.pem
+#            terraform output -raw public_key_openssh > tf-artifacts/public/ec2_key.pub
+#            chmod 644 tf-artifacts/ec2_key.pub
+#
+#      - name: Upload SSH Private Key as Artifact
+#        uses: actions/upload-pages-artifact@v3
+#        with:
+#          name: ec2-private-key
+#          path: infra/tf-artifacts/
+#
+#      - name: Upload SSH Public Key as Artifact
+#        uses: actions/upload-pages-artifact@v3
+#        with:
+#          name: ec2-public-key
+#          path: infra/tf-artifacts/public
 
