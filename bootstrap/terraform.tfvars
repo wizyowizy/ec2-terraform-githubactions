@@ -1,2 +1,2 @@
 
-bucket_name = "wizyowizy2025"
+bucket_name =  "wizyowizy2025-onyinye"
