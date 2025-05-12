@@ -1,9 +1,10 @@
 variable "region" {
-  default     = "us-east-1"
   description = "AWS region to deploy resources"
+  default     = "us-east-1"
 }
 
 variable "bucket_name" {
-  default     = "wizyowizy2025"
   description = "Globally unique name for the S3 bucket"
+  type        = string
+  default     = "wizyowizy2025-onyinye"
 }
