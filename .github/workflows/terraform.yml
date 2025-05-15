@@ -71,15 +71,22 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Init (with backend)
+      - name: Terraform Init and apply
         working-directory: infra
-        run: terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}" \
-          -backend-config="key=${{ env.TF_KEY }}" \
-          -backend-config="region=${{ env.AWS_REGION }}"
+        run: |
+          terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}" \
+                         -backend-config="key=${{ env.TF_KEY }}" \
+                         -backend-config="region=${{ env.AWS_REGION }}"
 
       - name: Terraform Apply
         working-directory: infra
         run: terraform apply -auto-approve -input=false
+
+      - name: Upload Terraform Plan Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan
+          path: plan.out
 
       - name: Save Private Key to Artifact
         working-directory: infra
@@ -89,7 +96,7 @@ jobs:
           chmod 600 tf-artifacts/ec2_key.pem
 
       - name: Upload SSH Key Artifact
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v3
         with:
           name: ec2-private-key
           path: infra/tf-artifacts/ec2_key.pem
