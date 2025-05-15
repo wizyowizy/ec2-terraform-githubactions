@@ -46,10 +46,9 @@ jobs:
 
       - name: Init & Apply Bootstrap (only if bucket does not exist)
         if: steps.check_bucket.outputs.exists == 'false'
-        working-directory: bootstrap
         run: |
           terraform init
-          terraform apply -auto-approve -input=false
+          terraform apply -auto-approve
 
   provision:
     name: Provision EC2 + KeyPair
@@ -90,7 +89,7 @@ jobs:
           chmod 600 tf-artifacts/ec2_key.pem
 
       - name: Upload SSH Key Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: ec2-private-key
           path: infra/tf-artifacts/ec2_key.pem
