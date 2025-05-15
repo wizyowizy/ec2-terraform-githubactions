@@ -83,7 +83,7 @@ jobs:
         run: terraform apply -auto-approve -input=false
 
       - name: Upload Terraform Plan Output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: terraform-plan
           path: plan.out
@@ -96,7 +96,7 @@ jobs:
           chmod 600 tf-artifacts/ec2_key.pem
 
       - name: Upload SSH Key Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: ec2-private-key
           path: infra/tf-artifacts/ec2_key.pem
