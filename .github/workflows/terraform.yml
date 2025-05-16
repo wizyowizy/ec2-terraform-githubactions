@@ -1,4 +1,4 @@
-name: "Terraform: Bootstrap + Provision Infrastructure"
+name: "Terraform: Bootstrap and Provision Infrastructure"
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  BUCKET_NAME: "wizyowizy-onyinye-onyejiaka-2025"
+  BUCKET_NAME: wizyowizy-onyinye-onyejiaka-2025
   TF_KEY: ec2-infra/terraform.tfstate
 
 jobs:
@@ -22,6 +22,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Setup AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -38,17 +43,18 @@ jobs:
       - name: Check if S3 Bucket Exists
         id: check_bucket
         run: |
-          if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
+          if aws s3api head-bucket --bucket "${{ env.BUCKET_NAME }}" 2>/dev/null; then
             echo "exists=true" >> $GITHUB_OUTPUT
           else
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Init & Apply Bootstrap (only if bucket does not exist)
+        working-directory: bootstrap
         if: steps.check_bucket.outputs.exists == 'false'
         run: |
           terraform init
-          terraform apply -auto-approve
+          terraform apply -auto-approve -input=false
 
   provision:
     name: Provision EC2 + KeyPair
@@ -71,22 +77,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Init and apply
+      - name: Terraform Init
         working-directory: infra
         run: |
-          terraform init -backend-config="bucket=${{ env.BUCKET_NAME }}" \
-                         -backend-config="key=${{ env.TF_KEY }}" \
-                         -backend-config="region=${{ env.AWS_REGION }}"
+          terraform init \
+            -backend-config="bucket=${{ env.BUCKET_NAME }}" \
+            -backend-config="key=${{ env.TF_KEY }}" \
+            -backend-config="region=${{ env.AWS_REGION }}"
+
+      - name: Terraform Plan
+        working-directory: infra
+        run: |
+          terraform plan -out=plan.out
+
+      - name: Upload Terraform Plan Output
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan
+          path: infra/plan.out
 
       - name: Terraform Apply
         working-directory: infra
-        run: terraform apply -auto-approve -input=false
-
-      - name: Upload Terraform Plan Output
-        uses: actions/upload-artifact@v2
-        with:
-          name: terraform-plan
-          path: plan.out
+        run: |
+          terraform apply -auto-approve -input=false plan.out
 
       - name: Save Private Key to Artifact
         working-directory: infra
@@ -95,8 +108,14 @@ jobs:
           terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
           chmod 600 tf-artifacts/ec2_key.pem
 
+      - name: "Debug: Verify Artifact File"
+        working-directory: infra
+        run: |
+          ls -l tf-artifacts/
+          cat tf-artifacts/ec2_key.pem || echo "File is empty or missing"
+
       - name: Upload SSH Key Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ec2-private-key
           path: infra/tf-artifacts/ec2_key.pem
