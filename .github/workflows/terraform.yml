@@ -52,7 +52,7 @@ jobs:
 
       - name: Init & Apply Bootstrap (only if bucket does not exist)
         working-directory: bootstrap
-        if: steps.check_bucket.outputs.exists == 'false'
+        if: ${{ steps.check_bucket.outputs.exists == 'false' }}
         run: |
           terraform init
           terraform apply -auto-approve -input=false
@@ -92,7 +92,7 @@ jobs:
           terraform plan -out=plan.out
 
       - name: Upload Terraform Plan Output
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@v3
         with:
           name: terraform-plan
           path: infra/plan.out
@@ -102,18 +102,11 @@ jobs:
         run: |
           terraform apply -auto-approve -input=false plan.out
 
-      - name: Save Private Key to Artifact
-        working-directory: infra
+      - name: Extract and Save Private Key
+        working-directory: infra/tf-artifacts
         run: |
-          mkdir -p tf-artifacts
-          terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
-          chmod 600 tf-artifacts/ec2_key.pem
-
-      - name: "Debug: Verify Artifact File"
-        working-directory: infra
-        run: |
-          ls -l tf-artifacts/
-          cat tf-artifacts/ec2_key.pem || echo "File is empty or missing"
+          terraform output -raw private_key_pem > ec2_key.pem
+          chmod 600 ec2_key.pem
 
       - name: Upload SSH Key Artifact
         uses: actions/upload-artifact@v3
