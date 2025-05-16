@@ -23,7 +23,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Check AWS CLI version
+      - name: Verify AWS CLI is Available
         run: aws --version
 
       - name: Setup Terraform
