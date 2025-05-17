@@ -92,7 +92,7 @@ jobs:
           terraform plan -out=plan.out
 
       - name: Upload Terraform Plan Output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload pagees-artifact@v3
         with:
           name: terraform-plan
           path: infra/plan.out
