@@ -13,7 +13,7 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  BUCKET_NAME: realcloud-tfstate-bucket-001
+  BUCKET_NAME: Ezinne-wizyowizy2025
   TF_KEY: ec2-infra/terraform.tfstate
 
 jobs:
@@ -44,7 +44,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
-            if aws s3api head-bucket --bucket "realcloud-tfstate-bucket-001" 2>/dev/null; then
+            if aws s3api head-bucket --bucket "Ezinne-wizyowizy2025" 2>/dev/null; then
               echo "exists=true" >> $GITHUB_ENV
             else
               echo "exists=false" >> $GITHUB_ENV
@@ -80,7 +80,7 @@ jobs:
       - name: Terraform Init (with backend)
         run: |
           terraform -chdir=infra init \
-            -backend-config="bucket=realcloud-tfstate-bucket-001" \
+            -backend-config="bucket=Ezinne-wizyowizy2025" \
             -backend-config="key=ec2-infra/terraform.tfstate" \
             -backend-config="region=us-east-1"
 
@@ -88,29 +88,29 @@ jobs:
         working-directory: infra
         run: terraform destroy -auto-approve -input=false || true
 
-#      - name: Terraform Apply
-#        working-directory: infra
-#        run: terraform apply -auto-approve -input=false
-#
-#      - name: Create A Dir
-#        working-directory: infra
-#        run: |
-#            mkdir -p tf-artifacts
-#            mkdir -p tf-artifacts/public
-#            terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
-#            chmod 600 tf-artifacts/ec2_key.pem
-#            terraform output -raw public_key_openssh > tf-artifacts/public/ec2_key.pub
-#            chmod 644 tf-artifacts/ec2_key.pub
-#
-#      - name: Upload SSH Private Key as Artifact
-#        uses: actions/upload-pages-artifact@v3
-#        with:
-#          name: ec2-private-key
-#          path: infra/tf-artifacts/
-#
-#      - name: Upload SSH Public Key as Artifact
-#        uses: actions/upload-pages-artifact@v3
-#        with:
-#          name: ec2-public-key
-#          path: infra/tf-artifacts/public
+      - name: Terraform Apply
+        working-directory: infra
+        run: terraform apply -auto-approve -input=false
+
+      - name: Create A Dir
+        working-directory: infra
+        run: |
+            mkdir -p tf-artifacts
+            mkdir -p tf-artifacts/public
+            terraform output -raw private_key_pem > tf-artifacts/ec2_key.pem
+            chmod 600 tf-artifacts/ec2_key.pem
+            terraform output -raw public_key_openssh > tf-artifacts/public/ec2_key.pub
+            chmod 644 tf-artifacts/ec2_key.pub
+
+      - name: Upload SSH Private Key as Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: ec2-private-key
+          path: infra/tf-artifacts/
+
+      - name: Upload SSH Public Key as Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: ec2-public-key
+          path: infra/tf-artifacts/public
 

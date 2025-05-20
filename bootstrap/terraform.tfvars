@@ -1,1 +1,1 @@
-bucket_name = "realcloud-tfstate-bucket-001"
+bucket_name = "Ezinne-wizyowizy2025"

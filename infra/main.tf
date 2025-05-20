@@ -129,7 +129,7 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_instance" "master" {
-  ami           = "ami-084568db4383264d4"
+  ami           = "ami-04f167a56786e4b09"
   instance_type = var.instance_type_master
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
@@ -139,7 +139,7 @@ resource "aws_instance" "master" {
   }
 }
 resource "aws_instance" "worker-node-1" {
-  ami           = "ami-084568db4383264d4"
+  ami           = "ami-04f167a56786e4b09"
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
@@ -150,7 +150,7 @@ resource "aws_instance" "worker-node-1" {
 }
 
 resource "aws_instance" "worker-node-2" {
-  ami           = "ami-084568db4383264d4"
+  ami           = "ami-04f167a56786e4b09"
   instance_type = var.instance_type
   key_name      = aws_key_pair.generated_key.key_name
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
